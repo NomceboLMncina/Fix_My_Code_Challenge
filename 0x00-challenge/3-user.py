@@ -53,7 +53,7 @@ class User():
             return False
         if self.__hashed_password is None:
             return False
-        return hashlib.md5(candidate_password.encode()).hexdigest().upper() == self.__hashed_password
+        return hashlib.md5(candidate_password.encode()).hexdigest().lower() == self.__hashed_password
 
 
 if __name__ == '__main__':
