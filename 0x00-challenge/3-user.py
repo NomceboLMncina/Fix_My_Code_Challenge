@@ -9,91 +9,95 @@ import uuid
 class User():
     """
     User class:
-    - user_id: public string, unique (uuid) identifier for the user
-    - hashed_password: private string, the MD5 hash of the user's password
+    - id: public string unique (uuid)
+    - password: private string hash in MD5
     """
 
-    __hashed_password = None
+    __password = None
 
     def __init__(self):
         """
         Initialize a new user:
-        - Assigns a unique `user_id` using the uuid4 method
+        - assigned an unique `id`
         """
-        self.user_id = str(uuid.uuid4())
+        self.id = str(uuid.uuid4())
 
     @property
     def password(self):
         """
-        Password getter:
-        - Returns the hashed password stored in `__hashed_password`
+        Password getter
         """
-        return self.__hashed_password
+        return self.__password
 
     @password.setter
-    def password(self, new_password):
+    def password(self, pwd):
         """
         Password setter:
-        - If `new_password` is `None` or not a string, set `__hashed_password` to `None`
-        - Otherwise, hash `new_password` using MD5 and store it in `__hashed_password`
+        - `None` if `pwd` is `None`
+        - `None` if `pwd` is not a string
+        - Hash `pwd` in MD5 before assign to `__password`
         """
-        if new_password is None or type(new_password) is not str:
-            self.__hashed_password = None
+        if pwd is None or type(pwd) is not str:
+            self.__password = None
         else:
-            self.__hashed_password = hashlib.md5(new_password.encode()).hexdigest().lower()
+            self._password = hashlib.md5(pwd.encode()).hexdigest().lower()
 
-    def is_valid_password(self, candidate_password):
+    def is_valid_password(self, pwd):
         """
-        Validates the provided password:
-        - Returns `False` if `candidate_password` is `None` or not a string
-        - Returns `False` if `__hashed_password` is `None`
-        - Compares `__hashed_password` with the MD5 hash of `candidate_password`
+        Valid password:
+        - `False` if `pwd` is `None`
+        - `False` if `pwd` is not a string
+        - `False` if `__password` is `None`
+        - Compare `__password` and the MD5 value of `pwd`
         """
-        if candidate_password is None or type(candidate_password) is not str:
+        if pwd is None or type(pwd) is not str:
             return False
-        if self.__hashed_password is None:
+        if self.__password is None:
             return False
-        return hashlib.md5(candidate_password.encode()).hexdigest().upper() == self.__hashed_password
+        return hashlib.md5(pwd.encode()).hexdigest().upper() == self.__password
 
 
 if __name__ == '__main__':
     print("Test User")
 
-    first_user = User()
-    if first_user.user_id is None:
-        print("New User should have a user_id")
+    user_1 = User()
+    if user_1.id is None:
+        print("New User should have an id")
 
-    second_user = User()
-    if first_user.user_id == second_user.user_id:
-        print("User.user_id should be unique")
+    user_2 = User()
+    if user_1.id == user_2.id:
+        print("User.id should be unique")
 
-    test_password = "myPassword"
-    first_user.password = test_password
-    if first_user.password == test_password:
+    u_pwd = "myPassword"
+    user_1.password = u_pwd
+    if user_1.password == u_pwd:
         print("User.password should be hashed")
 
-    if second_user.password is not None:
+    if user_2.password is not None:
         print("User.password should be None by default")
 
-    second_user.password = None
-    if second_user.password is not None:
+    user_2.password = None
+    if user_2.password is not None:
         print("User.password should be None if setter to None")
 
-    second_user.password = 89
-    if second_user.password is not None:
+    user_2.password = 89
+    if user_2.password is not None:
         print("User.password should be None if setter to an integer")
 
-    if first_user.is_valid_password(test_password):
-        print("is_valid_password should return True if it's the right password")
+    if user_1.is_valid_password(u_pwd):
+        print("is_valid_password should return True if it's the right \
+password")
 
-    if first_user.is_valid_password("Fakepwd"):
-        print("is_valid_password should return False if it's not the right password")
+    if user_1.is_valid_password("Fakepwd"):
+        print("is_valid_password should return False if it's not the right \
+password")
 
-    if first_user.is_valid_password(None):
-        print("is_valid_password should return False if compared with None")
+    if user_1.is_valid_password(None):
+        print("is_valid_password should return False if compare with None")
 
-    if first_user.is_valid_password(89):
-        print("is_valid_password should return False if compared with integer")
+    if user_1.is_valid_password(89):
+        print("is_valid_password should return False if compare with integer")
 
-    if second_user.is_valid_password("No pwd"):
-        print("is_valid_password should return False if no password set before")
+    if user_2.is_valid_password("No pwd"):
+        print("is_valid_password should return False if no password set \
+before")
